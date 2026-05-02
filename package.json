@@ -1,12 +1,12 @@
 {
-  "name": "loggito",
-  "version": "0.0.8",
+  "name": "@ellenode/loggy",
+  "version": "0.0.1",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Cristian Emanuelle Guzmán Suárez",
   "license": "ISC",
   "description": "",
   "dependencies": {
