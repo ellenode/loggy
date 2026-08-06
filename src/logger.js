@@ -4,12 +4,30 @@ import moment from 'moment';
 import fs from 'fs';
 import { join } from 'path';
 
+const safeStringify = (obj) => {
+    const seen = new WeakSet();
+
+    return JSON.stringify(obj, (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return '[Circular]';
+            }
+
+            seen.add(value);
+        }
+
+        return value;
+    }, 2);
+};
+
 const logFormat = printf(({ level, message, label, timestamp }) => {
-    message = typeof message === 'object'
-        ? JSON.stringify(message, null, 2)
-        : message;
+
+    if (typeof message === 'object') {
+        message = safeStringify(message);
+    }
 
     return `${timestamp} ${level.toUpperCase()}: ${message}`;
+
 });
 
 let instance = null;
@@ -59,12 +77,13 @@ const logger = (path = '') => {
 
     instance.close = async function () {
         for (const transport of this.transports) {
-            if (typeof transport.close === 'function') {
-                console.log('Closing logger...');
+            if (typeof transport.close === "function") {
                 await transport.close();
             }
         }
+
         instance = null;
+        instancePath = null;
     };
 
     return instance;
